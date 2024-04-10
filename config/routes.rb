@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'contacts/show'
+  get 'abouts/show'
   get 'shoes/index'
   get 'shoes/show'
   devise_for :users
