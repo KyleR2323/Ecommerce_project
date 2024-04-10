@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_10_064512) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_10_083138) do
   create_table "abouts", force: :cascade do |t|
     t.text "content"
     t.datetime "created_at", null: false
@@ -88,6 +88,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_10_064512) do
     t.decimal "item_price"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "order_id", null: false
+    t.index ["order_id"], name: "index_order_items_on_order_id"
   end
 
   create_table "orders", force: :cascade do |t|
@@ -98,12 +100,19 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_10_064512) do
     t.decimal "subtotal"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.integer "shoe_id", null: false
+    t.index ["shoe_id"], name: "index_orders_on_shoe_id"
+    t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
   create_table "regions", force: :cascade do |t|
     t.string "region_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "gst"
+    t.decimal "pst"
+    t.decimal "hst"
   end
 
   create_table "sale_prices", force: :cascade do |t|
@@ -126,6 +135,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_10_064512) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "brand_id", null: false
+    t.integer "sale_price_id", null: false
+    t.index ["brand_id"], name: "index_shoes_on_brand_id"
+    t.index ["sale_price_id"], name: "index_shoes_on_sale_price_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -136,10 +149,21 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_10_064512) do
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "region_id", null: false
+    t.string "first_name"
+    t.string "last_name"
+    t.string "address"
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["region_id"], name: "index_users_on_region_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "order_items", "orders"
+  add_foreign_key "orders", "shoes"
+  add_foreign_key "orders", "users"
+  add_foreign_key "shoes", "brands"
+  add_foreign_key "shoes", "sale_prices"
+  add_foreign_key "users", "regions"
 end
